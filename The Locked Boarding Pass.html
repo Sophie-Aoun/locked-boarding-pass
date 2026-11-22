@@ -1,0 +1,158 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Locked Boarding Pass</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@600&display=swap">
+<style>
+/* Layout: one boarding pass centred on a night-apron background; stub on the right holds the 4-digit lock. Single deliberate dark look. */
+:root {
+  --night: #0B1736; --night-2: #13224A; --paper: #F6F8FC; --ink: #0B1736;
+  --sign: #FFC23A; --cobalt: #2F5BEA; --muted: #6B7AA0; --ok: #1E9E6A; --bad: #E0475A;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+html, body { min-height: 100%; }
+body { background: radial-gradient(1200px 600px at 80% -10%, #1C2F63 0%, var(--night) 60%) fixed, var(--night); color: var(--paper); font-family: var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 40px; }
+.wrap { max-width: 920px; margin: 0 auto; display: grid; gap: 20px; }
+.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.top h1 { font-family: var(--display); font-size: clamp(26px, 4vw, 38px); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.top p { margin: 0; color: #A9B6D6; font-size: 15px; }
+.tag { font: 700 12px var(--display); letter-spacing: .14em; color: var(--ink); background: var(--sign); padding: 4px 10px; border-radius: 4px; }
+.pass { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); background: var(--paper); color: var(--ink); border-radius: 18px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.main { padding: 22px 24px; display: grid; gap: 16px; min-width: 0; }
+.band { display: flex; justify-content: space-between; align-items: center; gap: 12px; font: 700 12px var(--display); letter-spacing: .16em; color: var(--muted); }
+.route { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.iata { font: 700 clamp(40px, 7vw, 60px)/1 var(--display); letter-spacing: -.02em; }
+.city { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.dest.open .iata { color: var(--ok); animation: flip .6s ease; }
+.dest.open .city { color: var(--ok); font-weight: 600; }
+@keyframes flip { 0% { transform: rotateX(90deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.plane { flex: 1; min-width: 60px; height: 2px; background: repeating-linear-gradient(90deg, var(--muted) 0 8px, transparent 8px 14px); position: relative; }
+.plane::after { content: "✈"; position: absolute; left: 50%; top: -14px; transform: translateX(-50%); font-size: 20px; color: var(--cobalt); }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
+.f label, .f .k { display: block; font: 700 11px var(--display); letter-spacing: .14em; color: var(--muted); margin-bottom: 4px; }
+.f .v { font: 600 17px var(--body); }
+select { font: 600 16px var(--body); color: var(--ink); background: #fff; border: 1.5px solid #C3CEE3; border-radius: 8px; padding: 6px 8px; width: 100%; }
+.clues { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.clue { border: 1.5px dashed #C3CEE3; border-radius: 10px; padding: 8px 10px; font-size: 12.5px; color: var(--muted); }
+.clue b { display: block; color: var(--ink); font: 700 13px var(--display); }
+.stub { background: var(--night-2); color: var(--paper); padding: 22px 22px; display: grid; gap: 14px; align-content: start; position: relative; border-left: 2px dashed #3A4A73; min-width: 0; }
+.stub h2 { margin: 0; font: 700 14px var(--display); letter-spacing: .16em; color: var(--sign); }
+.digits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.digits input { width: 100%; aspect-ratio: 3/4; max-width: 100%; text-align: center; font: 600 clamp(26px, 5vw, 36px) var(--mono); color: var(--ink); background: var(--paper); border: 2px solid transparent; border-radius: 10px; }
+.digits input:focus { outline: none; border-color: var(--sign); box-shadow: 0 0 0 3px rgba(255,194,58,.35); }
+button { font: 700 16px var(--display); letter-spacing: .06em; background: var(--sign); color: var(--ink); border: 0; border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.msg { min-height: 1.4em; font-size: 14px; color: #A9B6D6; }
+.msg.bad { color: #FF8A99; }
+.tries { font-size: 12px; color: #6B7AA0; }
+.shake { animation: shake .35s; }
+@keyframes shake { 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+.stamp { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 6px; background: rgba(19,34,74,.94); }
+.stamp .big { font: 700 34px var(--display); color: var(--sign); border: 4px dashed var(--sign); border-radius: 14px; padding: 8px 16px; transform: rotate(-8deg); }
+.stamp .t { font: 600 15px var(--mono); color: var(--paper); margin-top: 14px; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; color: #C9D3EA; font-size: 14px; }
+.rules div { background: rgba(255,255,255,.05); border-radius: 12px; padding: 12px 14px; }
+.rules b { color: var(--paper); }
+@media (max-width: 720px) { .pass { grid-template-columns: 1fr; } .stub { border-left: 0; border-top: 2px dashed #3A4A73; } .clues { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .shake, .dest.open .iata { animation: none; } }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div><span class="tag">DAY 1 · GAME</span></div>
+    <h1>The Locked Boarding Pass</h1>
+    <p>Crack the 4 clues with Copilot Chat. Each clue gives one digit.</p>
+  </div>
+
+  <div class="pass">
+    <div class="main">
+      <div class="band"><span>BOARDING PASS</span><span>FLIGHT AI 2026</span></div>
+      <div class="route">
+        <div><div class="iata">AMM</div><div class="city">Amman · QAIA</div></div>
+        <div class="plane" aria-hidden="true"></div>
+        <div class="dest"><div class="iata" id="destCode">???</div><div class="city" id="destCity">Destination locked</div></div>
+      </div>
+      <div class="fields">
+        <div class="f"><label for="crew">CREW</label>
+          <select id="crew"><option>AMM</option><option>AQJ</option><option>DXB</option><option>CDG</option><option>IST</option></select></div>
+        <div class="f"><span class="k">GATE</span><span class="v">Copilot Chat</span></div>
+        <div class="f"><span class="k">SEAT</span><span class="v">Your crew's laptop</span></div>
+      </div>
+      <div class="clues" aria-label="The four clues">
+        <div class="clue"><b>Clue 1 · Search</b>Look it up on the web, then check the source.</div>
+        <div class="clue"><b>Clue 2 · Learn</b>Ask Copilot to explain it simply.</div>
+        <div class="clue"><b>Clue 3 · Translate</b>Decode the message, then solve it.</div>
+        <div class="clue"><b>Clue 4 · Think</b>Don't trust the first answer. Check it.</div>
+      </div>
+    </div>
+
+    <form class="stub" id="lock" autocomplete="off">
+      <h2>ENTER THE CODE</h2>
+      <div class="digits" id="digits">
+        <input id="d1" inputmode="numeric" maxlength="1" aria-label="Digit from clue 1">
+        <input id="d2" inputmode="numeric" maxlength="1" aria-label="Digit from clue 2">
+        <input id="d3" inputmode="numeric" maxlength="1" aria-label="Digit from clue 3">
+        <input id="d4" inputmode="numeric" maxlength="1" aria-label="Digit from clue 4">
+      </div>
+      <button type="submit" id="go">Unlock</button>
+      <div class="msg" id="msg" role="status">Clue 1 → digit 1, clue 2 → digit 2, and so on.</div>
+      <div class="tries" id="tries"></div>
+      <div class="stamp" id="stamp" hidden>
+        <div class="big">BOARDING ✈</div>
+        <div class="t" id="when"></div>
+        <div class="t">Show this screen to the trainer.</div>
+      </div>
+    </form>
+  </div>
+
+  <div class="rules">
+    <div><b>Copilot Chat only.</b> No files, no Office apps. Ask, check, ask again.</div>
+    <div><b>Check the sources.</b> If Copilot gives a link, open it before you trust the answer.</div>
+    <div><b>Wrong code?</b> No penalty, but every try is counted on this screen.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var K = "Mzc1Ng=="; // encoded answer
+  var inputs = [1, 2, 3, 4].map(function (i) { return document.getElementById("d" + i); });
+  var form = document.getElementById("lock"), msg = document.getElementById("msg"), tries = document.getElementById("tries");
+  var stamp = document.getElementById("stamp"), when = document.getElementById("when"), crew = document.getElementById("crew");
+  var count = 0;
+  inputs.forEach(function (el, i) {
+    el.addEventListener("input", function () {
+      el.value = el.value.replace(/\D/g, "").slice(0, 1);
+      if (el.value && i < 3) inputs[i + 1].focus();
+    });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && !el.value && i > 0) inputs[i - 1].focus();
+    });
+  });
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var code = inputs.map(function (x) { return x.value; }).join("");
+    if (code.length < 4) { msg.className = "msg bad"; msg.textContent = "Enter all 4 digits."; return; }
+    count++;
+    tries.textContent = "Tries: " + count;
+    if (btoa(code) === K) {
+      var t = new Date();
+      when.textContent = "Crew " + crew.value + " · unlocked at " + t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) + " · " + count + (count === 1 ? " try" : " tries");
+      stamp.hidden = false;
+      document.getElementById("destCode").textContent = "JFK";
+      document.getElementById("destCity").textContent = "New York · Destination unlocked";
+      document.querySelector(".dest").classList.add("open");
+      msg.textContent = "";
+    } else {
+      msg.className = "msg bad";
+      msg.textContent = "Wrong code. Check which clue is off and ask Copilot again.";
+      form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
+    }
+  });
+})();
+</script>
+
+</body></html>
